@@ -1,0 +1,6 @@
+log_path: './log'
+img_compression: 70
+img_max_height: 1000
+screenshots_interval: 60
+email_on_launch: ''
+http_post_to: ''
