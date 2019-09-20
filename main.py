@@ -2,9 +2,8 @@
 
 """
 Dependencies:
-- pip install pyyaml
-- pip install mss
-- pip install pillow
+- pip install mss pillow pyyaml requests
+- (or) pip install -r requirements.txt
 """
 
 import os
@@ -19,14 +18,6 @@ with open('config.yaml') as conf:
 		settings = yaml.safe_load(conf)
 	except yaml.YAMLError as exc:
 		print(exc)
-
-# Create log folder
-if not os.path.isdir(settings['log_path']):
-	os.mkdir(settings['log_path'])
-
-# Create screenshot folder
-if not os.path.isdir(os.path.join(settings['log_path'], 'screenshots/')):
-	os.mkdir(os.path.join(settings['log_path'], 'screenshots/'))
 
 if __name__ == '__main__':
 	logger = Logger(settings)
