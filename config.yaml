@@ -6,6 +6,6 @@ img_compression: 70  # (int) JPEG compression level (0-100)
 # Optional
 save_locally: true  # (bool) Save screenshots on local hard drive (/!\ if set to false and HTTP posting not configured, nothing will be saved !)
 log_path: './log'  # (string) (/!\ Required if save_locally is true) Where the log files should be saved
-http_post_to: 'http://localhost:8888/computerspy/computerspy.php'  # (string|null) If not null|false|empty, POST the screenshot to given URL https://somedomain.com/computerspy.php
+http_post_to: null  # (string|null) If not null|false|empty, POST all log data to the given URL (ex: https://somedomain.com/computerspy.php)
 http_post_password: null  # (string|null) If the receiving script requires a 'password' field to accept the POST
 http_post_instance: null  # (string|int|null) If you use ComputerSpy on multiple computers, change the instance to save the screenshots in different folders
