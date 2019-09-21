@@ -21,18 +21,23 @@ class Logger:
 		if 'save_locally' in self.m_settings and self.m_settings['save_locally'] is True:
 			self.m_saveLocally = True
 
-			# Create log folder
-			if not os.path.isdir(settings['log_path']):
-				os.mkdir(settings['log_path'])
-
-			# Create screenshot folder
-			if not os.path.isdir(os.path.join(settings['log_path'], 'screenshots/')):
-				os.mkdir(os.path.join(settings['log_path'], 'screenshots/'))
+			# Create log folders ('/log' and '/log/screenshots')
+			os.makedirs(os.path.join(settings['log_path'], 'screenshots/'), exist_ok=True)
 
 		self.m_httpPostToRemoteServer = False
 
 		if 'http_post_to' in self.m_settings and self.m_settings['http_post_to']:
 			self.m_httpPostToRemoteServer = True
+
+		self.m_httpPostUsePassword = False
+
+		if 'http_post_password' in self.m_settings and self.m_settings['http_post_password'] is not None:
+			self.m_httpPostUsePassword = True
+
+		self.m_httpPostUseInstance = False
+
+		if 'http_post_instance' in self.m_settings and self.m_settings['http_post_instance'] is not None:
+			self.m_httpPostUseInstance = True
 
 		self.logStart()  # Log Start
 		atexit.register(self.logClose)  # Log Close
@@ -67,9 +72,15 @@ class Logger:
 			f.write(message)
 
 	def postStartClose(self, log):
-		postData = {
-			'log_start_close': log
-		}
+		postData = {}
+
+		postData['log_start_close'] = log
+
+		if self.m_httpPostUsePassword:
+			postData['password'] = self.m_settings['http_post_password']
+
+		if self.m_httpPostUseInstance:
+			postData['instance'] = self.m_settings['http_post_instance']
 
 		with requests.Session() as session:
 			session.post(self.m_settings['http_post_to'], data=postData)
@@ -77,20 +88,9 @@ class Logger:
 	def writeScreenshot(self, imgBuffer, fileName):
 		path = os.path.join(self.m_settings['log_path'], 'screenshots/')
 
-		# Year folder
-		path += self.year() + '/'
-		if not os.path.isdir(path):
-			os.mkdir(path)
-
-		# Month folder
-		path += self.month() + '/'
-		if not os.path.isdir(path):
-			os.mkdir(path)
-
-		# Day folder
-		path += self.day() + '/'
-		if not os.path.isdir(path):
-			os.mkdir(path)
+		# Create folders
+		path += self.year() + '/' + self.month() + '/' + self.day() + '/'
+		os.makedirs(path, exist_ok=True)
 
 		path += fileName
 
@@ -100,10 +100,10 @@ class Logger:
 	def postScreenshot(self, imgBuffer, fileName):
 		postData = {}
 
-		if 'http_post_password' in self.m_settings and self.m_settings['http_post_password'] is not None:
+		if self.m_httpPostUsePassword:
 			postData['password'] = self.m_settings['http_post_password']
 
-		if 'http_post_instance' in self.m_settings and self.m_settings['http_post_instance'] is not None:
+		if self.m_httpPostUseInstance:
 			postData['instance'] = self.m_settings['http_post_instance']
 
 		postFiles = {}
