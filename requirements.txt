@@ -2,7 +2,7 @@ certifi==2019.9.11
 chardet==3.0.4
 idna==2.8
 mss==4.0.3
-Pillow==6.2.1
+Pillow==9.0.0
 PyYAML==5.1.2
 requests==2.22.0
 urllib3==1.25.5
